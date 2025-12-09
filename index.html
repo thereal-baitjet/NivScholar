@@ -144,12 +144,13 @@
 
         /* Main Layout */
         .main-container {
-            max-width: 1400px;
+            max-width: 1100px;
+            width: 100%;
             margin: 0 auto;
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: 300px 1fr 300px;
-            gap: 2rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
             min-height: calc(100vh - 100px);
         }
 
@@ -160,8 +161,8 @@
             box-shadow: var(--shadow-soft);
             padding: 1.5rem;
             height: fit-content;
-            position: sticky;
-            top: 120px;
+            position: static;
+            width: 100%;
         }
 
         .verse-selector h3 {
@@ -198,8 +199,12 @@
             box-shadow: var(--shadow-soft);
             display: flex;
             flex-direction: column;
-            height: 80vh;
+            height: auto;
+            min-height: 60vh;
             overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .chat-header {
@@ -414,8 +419,8 @@
             box-shadow: var(--shadow-soft);
             padding: 1.5rem;
             height: fit-content;
-            position: sticky;
-            top: 120px;
+            position: static;
+            width: 100%;
         }
 
         .study-notebook h3 {
