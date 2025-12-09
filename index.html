@@ -56,6 +56,40 @@
             min-height: 100vh;
         }
 
+        .no-scroll {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.85), rgba(114, 47, 55, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-overlay.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-logo {
+            max-width: min(320px, 70vw);
+            filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.25));
+        }
+
         /* Header and Navigation */
         .header {
             background: var(--pure-white);
@@ -942,6 +976,10 @@
     </style>
 </head>
 <body>
+    <div class="loading-overlay" id="loading-overlay">
+        <img src="resources/Logo.png" alt="NIV Scholar" class="loading-logo" />
+    </div>
+
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -1112,6 +1150,28 @@
     <script src="js/main.js"></script>
     
     <script>
+        // Loading overlay: show once per session for 4 seconds
+        (function() {
+            const overlay = document.getElementById('loading-overlay');
+            const key = 'niv-loading-shown';
+            const shouldShow = overlay && !sessionStorage.getItem(key);
+
+            if (!overlay) return;
+
+            if (shouldShow) {
+                document.body.classList.add('no-scroll');
+                overlay.classList.add('show');
+                setTimeout(() => {
+                    overlay.classList.add('hide');
+                    document.body.classList.remove('no-scroll');
+                    sessionStorage.setItem(key, '1');
+                    overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+                }, 4000);
+            } else {
+                overlay.remove();
+            }
+        })();
+
         // Initialize application when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             // Update notebook stats
