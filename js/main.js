@@ -52,11 +52,24 @@ class NIVScholarApp {
             
             // Page-specific initialization
             if (page === 'study') {
+                this.togglePrimaryLayout(false);
                 this.studyNotebook.loadSavedContent();
             } else if (page === 'explore') {
+                this.togglePrimaryLayout(false);
                 this.initializeExplorePage();
+            } else {
+                this.togglePrimaryLayout(true);
             }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+    }
+
+    togglePrimaryLayout(show) {
+        const elements = document.querySelectorAll('.verse-selector, .chat-container, .study-notebook, .topic-carousel-container');
+        elements.forEach((el) => {
+            el.style.display = show ? '' : 'none';
+        });
     }
 
     setupVerseSelector() {
