@@ -753,6 +753,7 @@
                 grid-template-columns: 1fr;
                 padding: 1.25rem 1rem;
                 gap: 1.25rem;
+                max-width: 960px;
             }
 
             .page-section,
@@ -783,6 +784,11 @@
                 height: 52px;
             }
 
+            .main-container {
+                max-width: 540px;
+                margin: 0 auto;
+            }
+
             .nav-links {
                 flex-direction: row;
                 flex-wrap: wrap;
@@ -806,6 +812,17 @@
             .verse-selector,
             .study-notebook {
                 padding: 1.25rem;
+            }
+
+            .verse-selector,
+            .study-notebook,
+            .topic-carousel-container,
+            .chat-container,
+            .study-page,
+            .explore-page {
+                border: 1px solid rgba(44, 62, 80, 0.08);
+                box-shadow: 0 8px 20px rgba(44, 62, 80, 0.08);
+                background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,243,233,0.92));
             }
 
             .chat-container {
@@ -864,6 +881,8 @@
             .main-container {
                 padding: 0.75rem 0.5rem 1rem;
                 gap: 0.75rem;
+                max-width: 520px;
+                margin: 0 auto;
             }
 
             .chat-container,
@@ -872,6 +891,15 @@
             .verse-selector,
             .study-notebook {
                 padding: 1rem;
+            }
+
+            .verse-selector,
+            .study-notebook,
+            .topic-carousel-container,
+            .chat-container,
+            .study-page,
+            .explore-page {
+                border-radius: 12px;
             }
 
             .topic-card {
