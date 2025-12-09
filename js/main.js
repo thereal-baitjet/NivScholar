@@ -39,10 +39,18 @@ class NIVScholarApp {
         });
         document.querySelector(`[data-page="${page}"]`).classList.add('active');
 
-        // Hide all pages
+        // Hide all secondary pages
         document.querySelectorAll('.page-section').forEach(section => {
             section.classList.remove('active');
         });
+
+        // Chat is the default layout (no dedicated page-section)
+        if (page === 'chat') {
+            this.currentPage = 'chat';
+            this.togglePrimaryLayout(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
 
         // Show target page
         const targetPage = document.getElementById(`${page}-page`);
