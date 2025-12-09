@@ -732,6 +732,76 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Responsive Layouts */
+        @media (max-width: 1024px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .header-content {
+                padding: 0 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 1.5rem 1rem;
+            }
+
+            .verse-selector,
+            .study-notebook {
+                position: static;
+                width: 100%;
+            }
+
+            .chat-container {
+                height: auto;
+                min-height: 60vh;
+            }
+
+            .chat-messages {
+                max-height: 55vh;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .logo img {
+                height: 56px;
+            }
+
+            .nav-links {
+                gap: 0.75rem;
+            }
+
+            .nav-link {
+                padding: 0.4rem 0.75rem;
+            }
+
+            .main-container {
+                padding: 1rem 0.75rem;
+            }
+
+            .chat-container {
+                border-radius: 10px;
+            }
+
+            .chat-messages {
+                max-height: 60vh;
+            }
+
+            .topic-carousel {
+                padding: 1rem 0.5rem;
+            }
+
+            .topic-card {
+                min-width: 220px;
+            }
+        }
     </style>
 </head>
 <body>
