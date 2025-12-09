@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblical Exploration - NIV Scholar</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Lora:wght@400;500;600&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <style>
+        :root {
+            --parchment-cream: #F7F3E9;
+            --deep-academic-blue: #2C3E50;
+            --warm-sepia: #8B4513;
+            --antique-gold: #B8860B;
+            --soft-sage: #9CAF88;
+            --muted-burgundy: #722F37;
+            --charcoal-gray: #36454F;
+            --pure-white: #FFFFFF;
+            
+            --base-font-size: 16px;
+            --border-radius: 8px;
+            --shadow-soft: 0 2px 10px rgba(44, 62, 80, 0.1);
+            --shadow-medium: 0 4px 20px rgba(44, 62, 80, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            font-size: var(--base-font-size);
+            line-height: 1.6;
+            color: var(--charcoal-gray);
+            background: var(--parchment-cream);
+            background-image: url('resources/parchment-texture.jpg');
+            background-blend-mode: soft-light;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--pure-white);
+            box-shadow: var(--shadow-soft);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--deep-academic-blue);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+            color: var(--charcoal-gray);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--antique-gold);
+            background: rgba(184, 134, 11, 0.1);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 2px;
+            background: var(--antique-gold);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--warm-sepia);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Exploration Sections */
+        .exploration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .exploration-section {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .exploration-section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--antique-gold);
+        }
+
+        .section-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--parchment-cream);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .section-title {
+            font-family: 'Merriweather', serif;
+            font-size: 1.5rem;
+            color: var(--deep-academic-blue);
+        }
+
+        .section-description {
+            color: var(--charcoal-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Interactive Elements */
+        .interactive-element {
+            background: var(--parchment-cream);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-left: 4px solid var(--antique-gold);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        .timeline-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .timeline-date {
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+            color: var(--antique-gold);
+            min-width: 80px;
+            font-size: 0.9rem;
+        }
+
+        .timeline-content h4 {
+            font-family: 'Merriweather', serif;
+            color: var(--deep-academic-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            font-size: 0.9rem;
+            color: var(--charcoal-gray);
+            line-height: 1.5;
+        }
+
+        /* Language Study */
+        .word-study {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-soft);
+            border-left: 4px solid var(--soft-sage);
+        }
+
+        .word-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .original-word {
+            font-family: 'Merriweather', serif;
+            font-size: 1.2rem;
+            color: var(--deep-academic-blue);
+            font-weight: 600;
+        }
+
+        .pronunciation {
+            font-style: italic;
+            color: var(--warm-sepia);
+            font-size: 0.9rem;
+        }
+
+        .word-meaning {
+            margin-bottom: 1rem;
+        }
+
+        .word-usage {
+            font-size: 0.9rem;
+            color: var(--charcoal-gray);
+        }
+
+        /* Manuscript Gallery */
+        .manuscript-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .manuscript-item {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .manuscript-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .manuscript-image {
+            width: 100%;
+            height: 150px;
+            background: var(--parchment-cream);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .manuscript-title {
+            font-family: 'Merriweather', serif;
+            font-size: 1rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .manuscript-date {
+            font-size: 0.8rem;
+            color: var(--warm-sepia);
+        }
+
+        /* Archaeological Discoveries */
+        .discovery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .discovery-card {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+        }
+
+        .discovery-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .discovery-image {
+            width: 100%;
+            height: 200px;
+            background: var(--parchment-cream);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .discovery-title {
+            font-family: 'Merriweather', serif;
+            font-size: 1.2rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .discovery-date {
+            font-size: 0.8rem;
+            color: var(--warm-sepia);
+            margin-bottom: 1rem;
+        }
+
+        .discovery-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--charcoal-gray);
+        }
+
+        /* Full Width Sections */
+        .full-width-section {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            grid-column: 1 / -1;
+        }
+
+        .cross-reference-network {
+            height: 500px;
+            margin-top: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0 1rem;
+            }
+
+            .exploration-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .discovery-grid,
+            .manuscript-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">NIV Scholar</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link">Chat</a></li>
+                    <li><a href="study.html" class="nav-link">Study Notebook</a></li>
+                    <li><a href="explore.html" class="nav-link active">Explore</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header fade-in">
+            <h1>Biblical Exploration Hub</h1>
+            <p>Dive deep into the historical, linguistic, and archaeological context of scripture with scholarly tools and interactive visualizations.</p>
+        </div>
+
+        <!-- Exploration Sections -->
+        <div class="exploration-grid">
+            <!-- Cross-Reference Explorer -->
+            <div class="exploration-section fade-in stagger-1">
+                <div class="section-header">
+                    <div class="section-icon">🔗</div>
+                    <h2 class="section-title">Cross-Reference Explorer</h2>
+                </div>
+                <p class="section-description">
+                    Discover the interconnected nature of biblical scripture through an interactive network of cross-references and thematic connections.
+                </p>
+                <div class="interactive-element">
+                    <h4>Popular Cross-References</h4>
+                    <div class="chart-container" id="cross-ref-chart"></div>
+                </div>
+            </div>
+
+            <!-- Historical Timeline -->
+            <div class="exploration-section fade-in stagger-2">
+                <div class="section-header">
+                    <div class="section-icon">📅</div>
+                    <h2 class="section-title">Historical Timeline</h2>
+                </div>
+                <p class="section-description">
+                    Explore the chronological context of biblical events and understand how historical periods shaped the development of scripture.
+                </p>
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-date">2000 BC</div>
+                        <div class="timeline-content">
+                            <h4>Abraham's Call</h4>
+                            <p>The beginning of God's covenant relationship with His people, marking the foundation of biblical history.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">1446 BC</div>
+                        <div class="timeline-content">
+                            <h4>Exodus from Egypt</h4>
+                            <p>Israel's liberation from Egyptian bondage and the giving of the Law at Mount Sinai.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">1000 BC</div>
+                        <div class="timeline-content">
+                            <h4>David's Kingdom</h4>
+                            <p>The establishment of the Davidic dynasty and the preparation for temple worship.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">586 BC</div>
+                        <div class="timeline-content">
+                            <h4>Babylonian Exile</h4>
+                            <p>The destruction of Jerusalem and the beginning of the Jewish diaspora.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">4 BC</div>
+                        <div class="timeline-content">
+                            <h4>Birth of Jesus</h4>
+                            <p>The incarnation of God's Son and the beginning of the New Testament era.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">30 AD</div>
+                        <div class="timeline-content">
+                            <h4>Crucifixion and Resurrection</h4>
+                            <p>The central events of Christian faith - Christ's death and resurrection.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Language Studies -->
+            <div class="exploration-section fade-in stagger-3">
+                <div class="section-header">
+                    <div class="section-icon">📜</div>
+                    <h2 class="section-title">Language Studies</h2>
+                </div>
+                <p class="section-description">
+                    Explore the rich meanings of Hebrew and Greek words that illuminate the deeper significance of biblical passages.
+                </p>
+                <div class="word-study">
+                    <div class="word-header">
+                        <div>
+                            <div class="original-word">אַהֲבָה (ahavah)</div>
+                            <div class="pronunciation">[ah-hah-VAH]</div>
+                        </div>
+                        <div style="color: var(--warm-sepia); font-size: 0.9rem;">Hebrew</div>
+                    </div>
+                    <div class="word-meaning">
+                        <strong>Meaning:</strong> Love, affection, care, devotion
+                    </div>
+                    <div class="word-usage">
+                        <strong>Usage:</strong> This word encompasses various forms of love - from romantic love (Song of Solomon) to God's steadfast love for His people (Psalm 136). It implies action and commitment, not just emotion.
+                    </div>
+                </div>
+                <div class="word-study">
+                    <div class="word-header">
+                        <div>
+                            <div class="original-word">ἀγάπη (agapē)</div>
+                            <div class="pronunciation">[ah-GAH-pay]</div>
+                        </div>
+                        <div style="color: var(--warm-sepia); font-size: 0.9rem;">Greek</div>
+                    </div>
+                    <div class="word-meaning">
+                        <strong>Meaning:</strong> Unconditional love, divine love, sacrificial love
+                    </div>
+                    <div class="word-usage">
+                        <strong>Usage:</strong> In the New Testament, this word describes God's love for humanity and the love Christians are called to show others. It's a love of choice and action, not dependent on feelings.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manuscript Studies -->
+            <div class="exploration-section fade-in stagger-4">
+                <div class="section-header">
+                    <div class="section-icon">📚</div>
+                    <h2 class="section-title">Ancient Manuscripts</h2>
+                </div>
+                <p class="section-description">
+                    Discover the fascinating world of biblical manuscripts and learn how textual criticism helps us understand the original text.
+                </p>
+                <div class="manuscript-gallery">
+                    <div class="manuscript-item" onclick="showManuscriptDetails('dead-sea-scrolls')">
+                        <div class="manuscript-image">📜</div>
+                        <div class="manuscript-title">Dead Sea Scrolls</div>
+                        <div class="manuscript-date">150 BC - 70 AD</div>
+                    </div>
+                    <div class="manuscript-item" onclick="showManuscriptDetails('codex-sinaiticus')">
+                        <div class="manuscript-image">📖</div>
+                        <div class="manuscript-title">Codex Sinaiticus</div>
+                        <div class="manuscript-date">4th Century AD</div>
+                    </div>
+                    <div class="manuscript-item" onclick="showManuscriptDetails('codex-vaticanus')">
+                        <div class="manuscript-image">📘</div>
+                        <div class="manuscript-title">Codex Vaticanus</div>
+                        <div class="manuscript-date">4th Century AD</div>
+                    </div>
+                    <div class="manuscript-item" onclick="showManuscriptDetails('aleppo-codex')">
+                        <div class="manuscript-image">📕</div>
+                        <div class="manuscript-title">Aleppo Codex</div>
+                        <div class="manuscript-date">10th Century AD</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Archaeological Discoveries -->
+            <div class="exploration-section fade-in stagger-5">
+                <div class="section-header">
+                    <div class="section-icon">🏺</div>
+                    <h2 class="section-title">Archaeological Discoveries</h2>
+                </div>
+                <p class="section-description">
+                    Explore recent archaeological findings that illuminate our understanding of biblical history and culture.
+                </p>
+                <div class="discovery-grid">
+                    <div class="discovery-card">
+                        <div class="discovery-image">🏛️</div>
+                        <div class="discovery-title">City of David Excavations</div>
+                        <div class="discovery-date">2020 - Present</div>
+                        <div class="discovery-description">
+                            Ongoing excavations in Jerusalem have revealed new insights into the ancient city's water systems and defensive structures from the time of King David.
+                        </div>
+                    </div>
+                    <div class="discovery-card">
+                        <div class="discovery-image">🗿</div>
+                        <div class="discovery-title">Tel Dan Inscription</div>
+                        <div class="discovery-date">1993</div>
+                        <div class="discovery-description">
+                            An inscription mentioning the "House of David" provided the first archaeological evidence for King David's dynasty outside the Bible.
+                        </div>
+                    </div>
+                    <div class="discovery-card">
+                        <div class="discovery-image">⚱️</div>
+                        <div class="discovery-title">Pool of Siloam</div>
+                        <div class="discovery-date">2004</div>
+                        <div class="discovery-description">
+                            The discovery of the Pool of Siloam mentioned in John 9 confirms the historical accuracy of the New Testament's geographical details.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Width Cross-Reference Network -->
+        <div class="full-width-section fade-in stagger-6">
+            <div class="section-header">
+                <div class="section-icon">🕸️</div>
+                <h2 class="section-title">Biblical Cross-Reference Network</h2>
+            </div>
+            <p class="section-description">
+                Visualize the intricate web of connections between different biblical passages, themes, and concepts throughout scripture.
+            </p>
+            <div class="cross-reference-network" id="cross-ref-network"></div>
+        </div>
+    </main>
+
+    <script>
+        class BiblicalExploration {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.initializeCharts();
+                this.setupEventListeners();
+                this.initializeAnimations();
+            }
+
+            initializeCharts() {
+                // Cross-reference chart
+                this.createCrossReferenceChart();
+                
+                // Full network visualization
+                this.createCrossReferenceNetwork();
+            }
+
+            createCrossReferenceChart() {
+                const chartContainer = document.getElementById('cross-ref-chart');
+                if (!chartContainer) return;
+
+                const chart = echarts.init(chartContainer);
+                
+                const data = [
+                    { name: 'John 3:16', value: 100, category: 0 },
+                    { name: 'Romans 5:8', value: 80, category: 1 },
+                    { name: 'Ephesians 2:8', value: 70, category: 1 },
+                    { name: '1 John 4:9', value: 60, category: 1 },
+                    { name: 'Genesis 1:1', value: 90, category: 0 },
+                    { name: 'John 1:1', value: 85, category: 1 },
+                    { name: 'Psalm 23:1', value: 75, category: 0 },
+                    { name: 'Isaiah 53:5', value: 65, category: 0 }
+                ];
+
+                const option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}: {c} connections'
+                    },
+                    series: [{
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        data: data,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        },
+                        itemStyle: {
+                            color: function(params) {
+                                const colors = ['#B8860B', '#8B4513', '#9CAF88'];
+                                return colors[params.data.category];
+                            }
+                        }
+                    }]
+                };
+
+                chart.setOption(option);
+            }
+
+            createCrossReferenceNetwork() {
+                const networkContainer = document.getElementById('cross-ref-network');
+                if (!networkContainer) return;
+
+                const chart = echarts.init(networkContainer);
+                
+                const nodes = [
+                    { name: 'God\'s Love', symbolSize: 80, category: 0, x: 0, y: 0 },
+                    { name: 'John 3:16', symbolSize: 60, category: 1 },
+                    { name: 'Romans 5:8', symbolSize: 50, category: 1 },
+                    { name: '1 John 4:9', symbolSize: 50, category: 1 },
+                    { name: 'Ephesians 2:8', symbolSize: 50, category: 1 },
+                    { name: 'Creation', symbolSize: 70, category: 0, x: 200, y: 0 },
+                    { name: 'Genesis 1:1', symbolSize: 60, category: 1 },
+                    { name: 'John 1:1', symbolSize: 60, category: 1 },
+                    { name: 'Colossians 1:16', symbolSize: 50, category: 1 },
+                    { name: 'Salvation', symbolSize: 75, category: 0, x: 100, y: 150 },
+                    { name: 'Romans 10:9', symbolSize: 55, category: 1 },
+                    { name: 'Acts 4:12', symbolSize: 50, category: 1 },
+                    { name: 'Titus 3:5', symbolSize: 50, category: 1 }
+                ];
+
+                const links = [
+                    { source: 'God\'s Love', target: 'John 3:16' },
+                    { source: 'God\'s Love', target: 'Romans 5:8' },
+                    { source: 'God\'s Love', target: '1 John 4:9' },
+                    { source: 'God\'s Love', target: 'Ephesians 2:8' },
+                    { source: 'Creation', target: 'Genesis 1:1' },
+                    { source: 'Creation', target: 'John 1:1' },
+                    { source: 'Creation', target: 'Colossians 1:16' },
+                    { source: 'Salvation', target: 'Romans 10:9' },
+                    { source: 'Salvation', target: 'Acts 4:12' },
+                    { source: 'Salvation', target: 'Titus 3:5' },
+                    { source: 'God\'s Love', target: 'Salvation' },
+                    { source: 'Creation', target: 'Salvation' }
+                ];
+
+                const option = {
+                    tooltip: {},
+                    legend: {
+                        data: ['Themes', 'Scripture References']
+                    },
+                    series: [{
+                        type: 'graph',
+                        layout: 'force',
+                        data: nodes,
+                        links: links,
+                        categories: [
+                            { name: 'Themes', itemStyle: { color: '#B8860B' } },
+                            { name: 'Scripture References', itemStyle: { color: '#8B4513' } }
+                        ],
+                        roam: true,
+                        label: {
+                            show: true,
+                            position: 'right'
+                        },
+                        force: {
+                            repulsion: 1000,
+                            edgeLength: 200
+                        },
+                        lineStyle: {
+                            color: '#9CAF88',
+                            width: 2,
+                            curveness: 0.3
+                        }
+                    }]
+                };
+
+                chart.setOption(option);
+            }
+
+            setupEventListeners() {
+                // Add click handlers for interactive elements
+                document.querySelectorAll('.discovery-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        this.showDiscoveryDetails(card);
+                    });
+                });
+
+                document.querySelectorAll('.manuscript-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        this.showManuscriptDetails(item.dataset.manuscript);
+                    });
+                });
+            }
+
+            showDiscoveryDetails(card) {
+                const title = card.querySelector('.discovery-title').textContent;
+                const description = card.querySelector('.discovery-description').textContent;
+                
+                alert(`${title}\n\n${description}\n\nThis would open a detailed view with more information, images, and scholarly analysis in the full application.`);
+            }
+
+            showManuscriptDetails(manuscriptId) {
+                const manuscripts = {
+                    'dead-sea-scrolls': 'The Dead Sea Scrolls are ancient Jewish religious manuscripts discovered between 1947 and 1956. They include biblical texts, apocryphal works, and sectarian writings that provide invaluable insights into Second Temple Judaism and the textual history of the Hebrew Bible.',
+                    'codex-sinaiticus': 'Codex Sinaiticus is one of the oldest complete manuscripts of the Christian Bible, dating to the 4th century. It contains the entire New Testament and significant portions of the Old Testament, providing crucial evidence for textual criticism.',
+                    'codex-vaticanus': 'Codex Vaticanus is another 4th-century manuscript of the Greek Bible. It\'s one of the most important witnesses to the text of the New Testament and is housed in the Vatican Library.',
+                    'aleppo-codex': 'The Aleppo Codex is a medieval manuscript of the Hebrew Bible, considered the most authoritative source for the Masoretic Text. It was written in the 10th century and carefully preserved by Jewish scribes.'
+                };
+                
+                const description = manuscripts[manuscriptId] || 'Detailed information about this manuscript would be available in the full application.';
+                alert(description);
+            }
+
+            initializeAnimations() {
+                if (typeof anime !== 'undefined') {
+                    // Animate exploration sections
+                    anime({
+                        targets: '.exploration-section',
+                        opacity: [0, 1],
+                        translateY: [30, 0],
+                        delay: anime.stagger(100),
+                        duration: 600,
+                        easing: 'easeOutQuart'
+                    });
+
+                    // Animate discovery cards
+                    anime({
+                        targets: '.discovery-card',
+                        opacity: [0, 1],
+                        scale: [0.9, 1],
+                        delay: anime.stagger(50),
+                        duration: 500,
+                        easing: 'easeOutQuart'
+                    });
+                }
+            }
+        }
+
+        // Global function for manuscript details
+        function showManuscriptDetails(manuscriptId) {
+            exploration.showManuscriptDetails(manuscriptId);
+        }
+
+        // Initialize exploration when DOM is loaded
+        let exploration;
+        document.addEventListener('DOMContentLoaded', () => {
+            exploration = new BiblicalExploration();
+        });
+    </script>
+</body>
+</html>

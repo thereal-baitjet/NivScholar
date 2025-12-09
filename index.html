@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIV Scholar - Biblical Study Companion</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Lora:wght@400;500;600&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <style>
+        :root {
+            --parchment-cream: #F7F3E9;
+            --deep-academic-blue: #2C3E50;
+            --warm-sepia: #8B4513;
+            --antique-gold: #B8860B;
+            --soft-sage: #9CAF88;
+            --muted-burgundy: #722F37;
+            --charcoal-gray: #36454F;
+            --pure-white: #FFFFFF;
+            
+            --base-font-size: 16px;
+            --border-radius: 8px;
+            --shadow-soft: 0 2px 10px rgba(44, 62, 80, 0.1);
+            --shadow-medium: 0 4px 20px rgba(44, 62, 80, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            font-size: var(--base-font-size);
+            line-height: 1.6;
+            color: var(--charcoal-gray);
+            background: var(--parchment-cream);
+            background-image: url('resources/parchment-texture.jpg');
+            background-blend-mode: soft-light;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Header and Navigation */
+        .header {
+            background: var(--pure-white);
+            box-shadow: var(--shadow-soft);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--deep-academic-blue);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+            color: var(--charcoal-gray);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--antique-gold);
+            background: rgba(184, 134, 11, 0.1);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 2px;
+            background: var(--antique-gold);
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 2rem;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* Sidebar - Verse Selector */
+        .verse-selector {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .verse-selector h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.2rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--antique-gold);
+        }
+
+        .verse-selector select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 2px solid var(--warm-sepia);
+            border-radius: var(--border-radius);
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 0.9rem;
+            background: var(--parchment-cream);
+            color: var(--charcoal-gray);
+        }
+
+        .verse-selector select:focus {
+            outline: none;
+            border-color: var(--antique-gold);
+            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.2);
+            background: linear-gradient(135deg, rgba(247, 243, 233, 0.5), rgba(255, 255, 255, 0.8));
+        }
+
+        .chat-header h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.4rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-header p {
+            font-size: 0.9rem;
+            color: var(--warm-sepia);
+            opacity: 0.8;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: var(--parchment-cream);
+            background-image: url('resources/parchment-texture.jpg');
+            background-blend-mode: soft-light;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .scholar-message {
+            align-items: flex-start;
+        }
+
+        .message-content {
+            background: var(--pure-white);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            max-width: 70%;
+            position: relative;
+        }
+
+        .user-message .message-content {
+            background: var(--deep-academic-blue);
+            color: var(--pure-white);
+        }
+
+        .scholar-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .scholar-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .scholar-name {
+            font-family: 'Merriweather', serif;
+            font-weight: 600;
+            color: var(--deep-academic-blue);
+            font-size: 0.9rem;
+        }
+
+        .save-message {
+            background: none;
+            border: none;
+            color: var(--warm-sepia);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .save-message:hover {
+            color: var(--antique-gold);
+            background: rgba(184, 134, 11, 0.1);
+        }
+
+        .message-text {
+            line-height: 1.6;
+            color: var(--charcoal-gray);
+        }
+
+        .user-message .message-text {
+            color: var(--pure-white);
+        }
+
+        .bible-reference {
+            color: var(--antique-gold);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .bible-reference:hover {
+            color: var(--deep-academic-blue);
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--warm-sepia);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-10px); opacity: 1; }
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(139, 69, 19, 0.2);
+            background: var(--pure-white);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            min-height: 50px;
+            max-height: 120px;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--warm-sepia);
+            border-radius: var(--border-radius);
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            resize: none;
+            background: var(--parchment-cream);
+            color: var(--charcoal-gray);
+            line-height: 1.4;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--antique-gold);
+            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+        }
+
+        .send-button {
+            background: var(--antique-gold);
+            color: var(--pure-white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .send-button:hover {
+            background: var(--deep-academic-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Study Notebook Sidebar */
+        .study-notebook {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .study-notebook h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.2rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--antique-gold);
+        }
+
+        .notebook-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+            background: var(--parchment-cream);
+            border-radius: var(--border-radius);
+        }
+
+        .stat-number {
+            font-family: 'Merriweather', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--antique-gold);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--warm-sepia);
+            margin-top: 0.25rem;
+        }
+
+        /* Topic Carousel */
+        .topic-carousel-container {
+            grid-column: 1 / -1;
+            margin-top: 2rem;
+        }
+
+        .topic-carousel-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .topic-carousel-header h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.4rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .topic-carousel-header p {
+            color: var(--warm-sepia);
+            font-size: 0.9rem;
+        }
+
+        .topic-carousel {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding: 1rem 0;
+            scroll-behavior: smooth;
+        }
+
+        .topic-carousel::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .topic-carousel::-webkit-scrollbar-track {
+            background: var(--parchment-cream);
+            border-radius: 4px;
+        }
+
+        .topic-carousel::-webkit-scrollbar-thumb {
+            background: var(--warm-sepia);
+            border-radius: 4px;
+        }
+
+        .topic-card {
+            min-width: 250px;
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--antique-gold);
+        }
+
+        .topic-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .topic-card h4 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .topic-card p {
+            font-size: 0.9rem;
+            color: var(--charcoal-gray);
+            line-height: 1.5;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+            grid-column: 1 / -1;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Study Page */
+        .study-page {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .study-page h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .saved-insights {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .insight-card {
+            background: var(--parchment-cream);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            border-left: 4px solid var(--antique-gold);
+        }
+
+        .insight-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .insight-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--warm-sepia);
+        }
+
+        .insight-verse {
+            background: var(--antique-gold);
+            color: var(--pure-white);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .empty-notebook {
+            text-align: center;
+            padding: 3rem;
+            color: var(--warm-sepia);
+        }
+
+        .empty-notebook p {
+            margin-bottom: 1rem;
+        }
+
+        /* Explore Page */
+        .explore-page {
+            background: var(--pure-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .explore-page h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: var(--deep-academic-blue);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .explore-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .explore-section {
+            background: var(--parchment-cream);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .explore-section h3 {
+            font-family: 'Merriweather', serif;
+            color: var(--deep-academic-blue);
+            margin-bottom: 1rem;
+        }
+
+        #cross-reference-chart {
+            width: 100%;
+            height: 400px;
+            margin-top: 1rem;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: var(--antique-gold);
+            color: var(--pure-white);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 250px 1fr 250px;
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .verse-selector,
+            .study-notebook {
+                position: static;
+            }
+
+            .chat-container {
+                height: 70vh;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .topic-carousel {
+                padding: 1rem;
+            }
+
+            .topic-card {
+                min-width: 200px;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--antique-gold);
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">NIV Scholar</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#" class="nav-link active" data-page="chat">Chat</a></li>
+                    <li><a href="#" class="nav-link" data-page="study">Study Notebook</a></li>
+                    <li><a href="#" class="nav-link" data-page="explore">Explore</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Verse Selector Sidebar -->
+        <aside class="verse-selector">
+            <h3>Scripture Navigator</h3>
+            <select id="book-select">
+                <option value="">Select Book</option>
+            </select>
+            <select id="chapter-select">
+                <option value="">Select Chapter</option>
+            </select>
+            <select id="verse-select">
+                <option value="">Select Verse</option>
+            </select>
+            
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(139, 69, 19, 0.2);">
+                <h4 style="font-family: 'Merriweather', serif; font-size: 1rem; color: var(--deep-academic-blue); margin-bottom: 1rem;">Quick References</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button onclick="window.chatInterface.lookUpVerse('John 3:16')" style="background: none; border: none; color: var(--antique-gold); cursor: pointer; text-align: left; padding: 0.5rem; border-radius: 4px; transition: background 0.3s ease;">John 3:16</button>
+                    <button onclick="window.chatInterface.lookUpVerse('Romans 8:28')" style="background: none; border: none; color: var(--antique-gold); cursor: pointer; text-align: left; padding: 0.5rem; border-radius: 4px; transition: background 0.3s ease;">Romans 8:28</button>
+                    <button onclick="window.chatInterface.lookUpVerse('Psalm 23:1')" style="background: none; border: none; color: var(--antique-gold); cursor: pointer; text-align: left; padding: 0.5rem; border-radius: 4px; transition: background 0.3s ease;">Psalm 23:1</button>
+                    <button onclick="window.chatInterface.lookUpVerse('Jeremiah 29:11')" style="background: none; border: none; color: var(--antique-gold); cursor: pointer; text-align: left; padding: 0.5rem; border-radius: 4px; transition: background 0.3s ease;">Jeremiah 29:11</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Chat Interface -->
+        <section class="chat-container">
+            <div class="chat-header">
+                <h2>Chat with NIV Scholar</h2>
+                <p>Ask questions about biblical passages, historical context, or theological themes</p>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be dynamically added here -->
+            </div>
+            
+            <div class="typing-indicator" id="typing-indicator">
+                <div class="scholar-avatar">
+                    <img src="resources/scholar-portrait.jpg" alt="NIV Scholar" />
+                </div>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <textarea 
+                        class="chat-input" 
+                        id="chat-input" 
+                        placeholder="Ask your biblical question..."
+                        rows="1"
+                    ></textarea>
+                    <button class="send-button" id="send-button">Send</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Study Notebook Sidebar -->
+        <aside class="study-notebook">
+            <h3>Study Notebook</h3>
+            <div class="notebook-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="insights-count">0</div>
+                    <div class="stat-label">Insights Saved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="verses-count">0</div>
+                    <div class="stat-label">Verses Studied</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1.5rem;">
+                <h4 style="font-family: 'Merriweather', serif; font-size: 1rem; color: var(--deep-academic-blue); margin-bottom: 1rem;">Recent Insights</h4>
+                <div id="recent-insights" style="max-height: 300px; overflow-y: auto;">
+                    <p style="color: var(--warm-sepia); font-size: 0.9rem; text-align: center; padding: 2rem;">Start chatting to save insights</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Study Notebook Page -->
+        <section class="page-section study-page" id="study-page">
+            <h2>Your Study Notebook</h2>
+            <div class="saved-insights" id="saved-insights">
+                <div class="empty-notebook">
+                    <p>Your study notebook is empty.</p>
+                    <p>Start chatting with NIV Scholar to save insights and reflections.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Explore Page -->
+        <section class="page-section explore-page" id="explore-page">
+            <h2>Biblical Exploration Hub</h2>
+            <div class="explore-sections">
+                <div class="explore-section">
+                    <h3>Cross-Reference Explorer</h3>
+                    <p>Discover connections between different biblical passages and themes.</p>
+                    <div id="cross-reference-chart"></div>
+                </div>
+                <div class="explore-section">
+                    <h3>Historical Context</h3>
+                    <p>Explore the cultural and historical background of biblical events.</p>
+                    <ul style="margin-top: 1rem; color: var(--charcoal-gray);">
+                        <li>Ancient Near Eastern cultures</li>
+                        <li>Roman Empire context</li>
+                        <li>Jewish religious practices</li>
+                        <li>Archaeological discoveries</li>
+                    </ul>
+                </div>
+                <div class="explore-section">
+                    <h3>Language Studies</h3>
+                    <p>Dive into the original Hebrew and Greek words of scripture.</p>
+                    <ul style="margin-top: 1rem; color: var(--charcoal-gray);">
+                        <li>Hebrew word studies</li>
+                        <li>Greek New Testament terms</li>
+                        <li>Translation comparisons</li>
+                        <li>Cultural linguistic insights</li>
+                    </ul>
+                </div>
+                <div class="explore-section">
+                    <h3>Manuscript Insights</h3>
+                    <p>Learn about textual criticism and ancient biblical manuscripts.</p>
+                    <ul style="margin-top: 1rem; color: var(--charcoal-gray);">
+                        <li>Dead Sea Scrolls</li>
+                        <li>Septuagint studies</li>
+                        <li>Textual variants</li>
+                        <li>Translation methodology</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic Carousel -->
+        <div class="topic-carousel-container">
+            <div class="topic-carousel-header">
+                <h3>Scholarly Discussion Topics</h3>
+                <p>Click on any topic to begin exploring with NIV Scholar</p>
+            </div>
+            <div class="topic-carousel" id="topic-carousel">
+                <!-- Topic cards will be dynamically added here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="js/api.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        // Initialize application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Update notebook stats
+            function updateNotebookStats() {
+                const insights = JSON.parse(localStorage.getItem('niv-scholar-insights') || '[]');
+                document.getElementById('insights-count').textContent = insights.length;
+                document.getElementById('verses-count').textContent = new Set(insights.filter(i => i.verseContext).map(i => `${i.verseContext.book} ${i.verseContext.chapter}:${i.verseContext.verse}`)).size;
+                
+                // Update recent insights
+                const recentContainer = document.getElementById('recent-insights');
+                if (insights.length > 0) {
+                    const recent = insights.slice(-3).reverse();
+                    recentContainer.innerHTML = recent.map(insight => `
+                        <div style="margin-bottom: 1rem; padding: 0.75rem; background: var(--parchment-cream); border-radius: 4px; border-left: 3px solid var(--antique-gold);">
+                            <p style="font-size: 0.85rem; line-height: 1.4; margin-bottom: 0.5rem;">${insight.content.substring(0, 100)}${insight.content.length > 100 ? '...' : ''}</p>
+                            ${insight.verseContext ? `<small style="color: var(--warm-sepia);">${insight.verseContext.book} ${insight.verseContext.chapter}:${insight.verseContext.verse}</small>` : ''}
+                        </div>
+                    `).join('');
+                }
+            }
+            
+            // Update stats initially and every few seconds
+            updateNotebookStats();
+            setInterval(updateNotebookStats, 5000);
+            
+            // Add smooth scrolling to chat messages
+            const chatMessages = document.getElementById('chat-messages');
+            if (chatMessages) {
+                chatMessages.style.scrollBehavior = 'smooth';
+            }
+        });
+    </script>
+</body>
+</html>
