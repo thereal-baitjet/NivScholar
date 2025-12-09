@@ -736,25 +736,29 @@
         /* Responsive Layouts */
         @media (max-width: 1024px) {
             .header {
-                padding: 1rem;
+                padding: 0.75rem 1rem;
             }
 
             .header-content {
-                padding: 0 1rem;
+                padding: 0 0.5rem;
+                gap: 0.5rem;
             }
 
             .nav-links {
                 flex-wrap: wrap;
-                gap: 1rem;
+                gap: 0.75rem;
             }
 
             .main-container {
                 grid-template-columns: 1fr;
-                padding: 1.5rem 1rem;
+                padding: 1.25rem 1rem;
+                gap: 1.25rem;
             }
 
+            .page-section,
             .verse-selector,
-            .study-notebook {
+            .study-notebook,
+            .chat-container {
                 position: static;
                 width: 100%;
             }
@@ -765,29 +769,55 @@
             }
 
             .chat-messages {
-                max-height: 55vh;
+                max-height: 50vh;
+            }
+
+            .study-page,
+            .explore-page {
+                padding: 1.5rem;
             }
         }
 
         @media (max-width: 640px) {
             .logo img {
-                height: 56px;
+                height: 52px;
             }
 
             .nav-links {
-                gap: 0.75rem;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
             }
 
             .nav-link {
-                padding: 0.4rem 0.75rem;
+                padding: 0.35rem 0.65rem;
+                font-size: 0.95rem;
             }
 
             .main-container {
-                padding: 1rem 0.75rem;
+                padding: 0.85rem 0.75rem 1.25rem;
+                gap: 1rem;
+            }
+
+            .chat-container,
+            .study-page,
+            .explore-page,
+            .verse-selector,
+            .study-notebook {
+                padding: 1.25rem;
             }
 
             .chat-container {
                 border-radius: 10px;
+            }
+
+            .chat-input-wrapper {
+                gap: 0.5rem;
+            }
+
+            .chat-input {
+                font-size: 1rem;
             }
 
             .chat-messages {
@@ -795,12 +825,19 @@
             }
 
             .topic-carousel {
-                padding: 1rem 0.5rem;
+                padding: 1rem 0.35rem;
             }
 
             .topic-card {
-                min-width: 220px;
+                min-width: 200px;
+                padding: 1rem;
             }
+
+            .study-page h2,
+            .explore-page h2 {
+                font-size: 1.4rem;
+            }
+        }
         }
     </style>
 </head>
