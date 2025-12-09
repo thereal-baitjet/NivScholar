@@ -4,11 +4,11 @@
  */
 
 class NIVScholarAPI {
-    constructor() {
-        this.apiKey = 'sk-your-api-key-here'; // In production, this should be from secure environment
-        this.model = 'gpt-4';
-        this.baseURL = 'https://api.openai.com/v1/chat/completions';
+    constructor(options = {}) {
+        this.apiEndpoint = options.apiEndpoint || '/api/chat';
+        this.model = 'gpt-4o-mini';
         this.conversationHistory = [];
+        this.useMock = options.useMock || false;
         
         // NIV Scholar Persona Context
         this.scholarContext = {
@@ -37,37 +37,39 @@ class NIVScholarAPI {
     }
 
     async sendMessage(userMessage, verseContext = null) {
+        // Keep previous history separate so we don't double-send the latest user prompt
+        const payloadHistory = [...this.conversationHistory];
+        const userPrompt = this.buildUserPrompt(userMessage, verseContext);
+
+        // Store user message locally for continuity
+        this.conversationHistory.push({
+            role: 'user',
+            content: userPrompt
+        });
+
+        if (this.useMock) {
+            return this.simulateResponse(userMessage, verseContext);
+        }
+
         try {
-            // Add user message to conversation history
-            this.conversationHistory.push({
-                role: 'user',
-                content: this.buildUserPrompt(userMessage, verseContext)
-            });
-
-            // Prepare the full conversation context
-            const messages = [this.scholarContext, ...this.conversationHistory];
-
-            const response = await fetch(this.baseURL, {
+            const response = await fetch(this.apiEndpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: this.model,
-                    messages: messages,
-                    max_tokens: 1000,
-                    temperature: 0.7,
-                    stream: false
+                    prompt: userPrompt,
+                    history: payloadHistory
                 })
             });
 
             if (!response.ok) {
-                throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                const errorText = await response.text();
+                throw new Error(`API Error: ${response.status} ${response.statusText} ${errorText}`);
             }
 
             const data = await response.json();
-            const assistantMessage = data.choices[0].message.content;
+            const assistantMessage = data.message;
 
             // Add AI response to conversation history
             this.conversationHistory.push({
@@ -78,7 +80,7 @@ class NIVScholarAPI {
             return {
                 success: true,
                 message: assistantMessage,
-                timestamp: new Date().toISOString()
+                timestamp: data.timestamp || new Date().toISOString()
             };
 
         } catch (error) {

@@ -59,11 +59,14 @@ class ChatInterface {
         
         try {
             // Get response from NIV Scholar AI
-            const response = await this.api.simulateResponse(message, this.currentVerse);
+            const response = await this.api.sendMessage(message, this.currentVerse);
             
             if (response.success) {
                 // Simulate typing delay for natural feel
                 await this.typeMessage(response.message);
+            } else if (response.fallbackMessage) {
+                await this.typeMessage(response.fallbackMessage);
+                this.addErrorMessage(response.error);
             } else {
                 this.addErrorMessage(response.error);
             }
