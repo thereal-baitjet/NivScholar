@@ -45,13 +45,18 @@ class ChatInterface {
         });
     }
 
-    async sendMessage() {
-        const message = this.inputElement.value.trim();
+    async sendMessage(messageOverride = null) {
+        const rawMessage = messageOverride !== null ? messageOverride : this.inputElement.value;
+        const message = rawMessage.trim();
         if (!message || this.isTyping) return;
 
-        // Clear input and add user message to chat
-        this.inputElement.value = '';
-        this.inputElement.style.height = 'auto';
+        // Clear input for manual entry
+        if (messageOverride === null) {
+            this.inputElement.value = '';
+            this.inputElement.style.height = 'auto';
+        }
+
+        // Add user message to chat
         this.addUserMessage(message);
         
         // Show typing indicator

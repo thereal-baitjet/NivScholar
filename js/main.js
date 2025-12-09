@@ -247,14 +247,8 @@ class NIVScholarApp {
 
     selectTopic(topic) {
         if (window.chatInterface) {
-            const topicMessages = [
-                `I'd love to explore "${topic.title}" with you. This is a fascinating area of biblical study that offers rich insights for our understanding of scripture.`,
-                `Excellent choice! "${topic.title}" is a subject close to my heart. Let me share some scholarly perspectives on this important topic.`,
-                `"${topic.title}" provides us with much to contemplate. This area of study reveals the depth and complexity of biblical scholarship.`
-            ];
-            
-            const randomMessage = topicMessages[Math.floor(Math.random() * topicMessages.length)];
-            window.chatInterface.typeMessage(randomMessage);
+            const prompt = `I'm interested in "${topic.title}". ${topic.description}. Please guide me through this topic with historical context, key scriptures, and scholarly insights.`;
+            window.chatInterface.sendMessage(prompt);
         }
     }
 
